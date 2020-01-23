@@ -30,6 +30,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.util.Log;
 
+import com.getcapacitor.JSObject;
+
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.google.android.gms.ads.reward.RewardItem;
@@ -54,8 +56,9 @@ public class AdMobAdsRewardedAdListener implements RewardedVideoAdListener {
             @Override
             public void run() {
                 Log.d(AdMobAds.ADMOBADS_LOGTAG, adType + ": rewarded");
-                admobAds.getBridge().triggerWindowJSEvent("onRewardedAd", "{ 'adType': " + adType + " }");
-                // admobAds.getWebView().loadUrl(event);
+                JSObject data = new JSObject();
+                data.put("adType", adType);
+                admobAds.notifyListeners("onRewardedAd", data);
             }
         });
     }
@@ -67,8 +70,9 @@ public class AdMobAdsRewardedAdListener implements RewardedVideoAdListener {
             @Override
             public void run() {
                 Log.d(AdMobAds.ADMOBADS_LOGTAG, adType + ": left application");
-                admobAds.getBridge().triggerWindowJSEvent("onAdLeftApplication", "{ 'adType': " + adType + " }");
-                // admobAds.getWebView().loadUrl(event);
+                JSObject data = new JSObject();
+                data.put("adType", adType);
+                admobAds.notifyListeners("onAdLeftApplication", data);
             }
         });
     }
@@ -80,8 +84,9 @@ public class AdMobAdsRewardedAdListener implements RewardedVideoAdListener {
             @Override
             public void run() {
                 Log.d(AdMobAds.ADMOBADS_LOGTAG, adType + ": ad closed after clicking on it");
-                admobAds.getBridge().triggerWindowJSEvent("onAdClosed", "{ 'adType': " + adType + " }");
-                // admobAds.getWebView().loadUrl(event);
+                JSObject data = new JSObject();
+                data.put("adType", adType);
+                admobAds.notifyListeners("onAdClosed", data);
             }
         });
     }
@@ -96,8 +101,11 @@ public class AdMobAdsRewardedAdListener implements RewardedVideoAdListener {
                 public void run() {
                     String reason = getErrorReason(code);
                     Log.d(AdMobAds.ADMOBADS_LOGTAG, adType + ": failed to load ad (" + reason + ")");
-                    admobAds.getBridge().triggerWindowJSEvent("onAdFailedToLoad", "{ 'adType': " + adType + ", 'error': " + code + ", 'reason': " + reason + "  }");
-                    // admobAds.getWebView().loadUrl(event);
+                    JSObject data = new JSObject();
+                    data.put("adType", adType);
+                    data.put("error", code);
+                    data.put("reason", reason);
+                    admobAds.notifyListeners("onAdFailedToLoad", data);
                 }
             });
         } else {
@@ -135,8 +143,9 @@ public class AdMobAdsRewardedAdListener implements RewardedVideoAdListener {
             @Override
             public void run() {
                 Log.d(AdMobAds.ADMOBADS_LOGTAG, adType + ": ad loaded");
-                admobAds.getBridge().triggerWindowJSEvent("onAdLoaded", "{ 'adType': " + adType + " }");
-                // admobAds.getWebView().loadUrl(event);
+                JSObject data = new JSObject();
+                data.put("adType", adType);
+                admobAds.notifyListeners("onAdLoaded", data);
             }
         });
     }
@@ -149,8 +158,9 @@ public class AdMobAdsRewardedAdListener implements RewardedVideoAdListener {
             @Override
             public void run() {
                 Log.d(AdMobAds.ADMOBADS_LOGTAG, adType + ": ad opened");
-                admobAds.getBridge().triggerWindowJSEvent("onAdOpened", "{ 'adType': " + adType + " }");
-                // admobAds.getWebView().loadUrl(event);
+                JSObject data = new JSObject();
+                data.put("adType", adType);
+                admobAds.notifyListeners("onAdOpened", data);
             }
         });
     }
@@ -162,8 +172,9 @@ public class AdMobAdsRewardedAdListener implements RewardedVideoAdListener {
             @Override
             public void run() {
                 Log.d(AdMobAds.ADMOBADS_LOGTAG, adType + ": ad video started");
-                admobAds.getBridge().triggerWindowJSEvent("onRewardedAdVideoStarted", "{ 'adType': " + adType + " }");
-                // admobAds.getWebView().loadUrl(event);
+                JSObject data = new JSObject();
+                data.put("adType", adType);
+                admobAds.notifyListeners("onRewardedAdVideoStarted", data);
             }
         });
     }
@@ -175,8 +186,9 @@ public class AdMobAdsRewardedAdListener implements RewardedVideoAdListener {
             @Override
             public void run() {
                 Log.d(AdMobAds.ADMOBADS_LOGTAG, adType + ": ad video completed");
-                admobAds.getBridge().triggerWindowJSEvent("onRewardedAdVideoCompleted", "{ 'adType': " + adType + " }");
-                // admobAds.getWebView().loadUrl(event);
+                JSObject data = new JSObject();
+                data.put("adType", adType);
+                admobAds.notifyListeners("onRewardedAdVideoCompleted", data);
             }
         });
     }

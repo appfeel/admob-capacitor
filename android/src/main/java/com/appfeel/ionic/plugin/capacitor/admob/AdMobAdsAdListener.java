@@ -30,6 +30,7 @@ import android.annotation.SuppressLint;
 import android.util.Log;
 import android.app.Activity;
 
+import com.getcapacitor.JSObject;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 
@@ -53,8 +54,9 @@ public class AdMobAdsAdListener extends AdListener {
             @Override
             public void run() {
                 Log.d(AdMobAds.ADMOBADS_LOGTAG, adType + ": ad loaded");
-                admobAds.getBridge().triggerDocumentJSEvent("onAdLoaded", "{ 'adType': " + adType + " }");
-                // admobAds.webView.loadUrl(event);
+                JSObject data = new JSObject();
+                data.put("adType", adType);
+                admobAds.notifyListeners("onAdLoaded", data);
             }
         });
     }
@@ -69,8 +71,11 @@ public class AdMobAdsAdListener extends AdListener {
                 public void run() {
                     String reason = getErrorReason(code);
                     Log.d(AdMobAds.ADMOBADS_LOGTAG, adType + ": failed to load ad (" + reason + ")");
-                    admobAds.getBridge().triggerDocumentJSEvent("onAdFailedToLoad", "{ 'adType': " + adType + ", 'error': " + code + ", 'reason': " + reason + "  }");
-                    // admobAds.webView.loadUrl(event);
+                    JSObject data = new JSObject();
+                    data.put("adType", adType);
+                    data.put("error", code);
+                    data.put("reason", reason);
+                    admobAds.notifyListeners("onAdFailedToLoad", data);
                 }
             });
         } else {
@@ -108,8 +113,9 @@ public class AdMobAdsAdListener extends AdListener {
             @Override
             public void run() {
                 Log.d(AdMobAds.ADMOBADS_LOGTAG, adType + ": ad opened");
-                admobAds.getBridge().triggerDocumentJSEvent("onAdOpened", "{ 'adType': " + adType + " }");
-                // admobAds.webView.loadUrl(event);
+                JSObject data = new JSObject();
+                data.put("adType", adType);
+                admobAds.notifyListeners("onAdOpened", data);
             }
         });
     }
@@ -121,8 +127,9 @@ public class AdMobAdsAdListener extends AdListener {
             @Override
             public void run() {
                 Log.d(AdMobAds.ADMOBADS_LOGTAG, adType + ": left application");
-                admobAds.getBridge().triggerDocumentJSEvent("onAdLeftApplication", "{ 'adType': " + adType + " }");
-                // admobAds.webView.loadUrl(event);
+                JSObject data = new JSObject();
+                data.put("adType", adType);
+                admobAds.notifyListeners("onAdLeftApplication", data);
             }
         });
     }
@@ -134,8 +141,9 @@ public class AdMobAdsAdListener extends AdListener {
             @Override
             public void run() {
                 Log.d(AdMobAds.ADMOBADS_LOGTAG, adType + ": ad closed after clicking on it");
-                admobAds.getBridge().triggerDocumentJSEvent("onAdClosed", "{ 'adType': " + adType + " }");
-                // admobAds.webView.loadUrl(event);
+                JSObject data = new JSObject();
+                data.put("adType", adType);
+                admobAds.notifyListeners("onAdClosed", data);
             }
         });
     }

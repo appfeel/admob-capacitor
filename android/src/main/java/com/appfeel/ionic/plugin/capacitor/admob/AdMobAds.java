@@ -196,6 +196,11 @@ public class AdMobAds extends Plugin implements IConnectivityChange {
         super.handleOnStop();
     }
 
+    @Override
+    public void notifyListeners(String eventName, JSObject data) {
+        super.notifyListeners(eventName, data);
+    }
+
     public void handleOnAdLoaded(String adType) {
         if (INTERSTITIAL.equalsIgnoreCase(adType)) {
             isInterstitialAvailable = true;
@@ -456,7 +461,7 @@ public class AdMobAds extends Plugin implements IConnectivityChange {
      *         succcessfully. Listen for onReceiveAd() and onFailedToReceiveAd()
      *         callbacks to see if an ad was successfully retrieved.
      */
-    private void showBannerAd(final Boolean show = true, final PluginCall call) {
+    private void showBannerAd(final Boolean show, final PluginCall call) {
         if (adView == null) {
             String errorMessage = "adView is null, call createBannerView first.";
             if (call != null) {
@@ -471,7 +476,6 @@ public class AdMobAds extends Plugin implements IConnectivityChange {
             public void run() {
                 if (show == isBannerVisible) {
                     // no change
-
                 } else if (show) {
                     if (adView != null && adView.getParent() != null) {
                         ((ViewGroup) adView.getParent()).removeView(adView);
