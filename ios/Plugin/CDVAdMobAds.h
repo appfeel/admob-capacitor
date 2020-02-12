@@ -1,5 +1,5 @@
 /*
- CDVAdMobAds.h
+ CAPAdMobAds.h
  Copyright 2015 AppFeel. All rights reserved.
  http://www.appfeel.com
  
@@ -24,7 +24,6 @@
  SOFTWARE.
  */
 
-#import <Cordova/CDV.h>
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
@@ -35,8 +34,8 @@
 #import <GoogleMobileAds/GADBannerViewDelegate.h>
 #import <GoogleMobileAds/GADInterstitialDelegate.h>
 #import <GoogleMobileAds/GADRewardBasedVideoAdDelegate.h>
-#import "CDVAdMobAdsAdListener.h"
-#import "CDVAdMobAdsRewardedAdListener.h"
+#import "CAPAdMobAdsAdListener.h"
+#import "CAPAdMobAdsRewardedAdListener.h"
 #import "AppFeelReachability.h"
 
 #pragma mark - JS requestAd options
@@ -44,12 +43,12 @@
 @class GADBannerView;
 @class GADInterstitial;
 @class GADRewardBasedVideoAd;
-@class CDVAdMobAdsAdListener;
-@class CDVAdMobAdsRewardedAdListener;
+@class CAPAdMobAdsAdListener;
+@class CAPAdMobAdsRewardedAdListener;
 
 #pragma mark AdMobAds Plugin
 
-@interface CDVAdMobAds : CDVPlugin {
+@interface CAPAdMobAds : CAPPlugin {
 }
 
 @property (assign) BOOL isInterstitialAvailable;
@@ -57,10 +56,10 @@
 
 @property (nonatomic, retain) GADBannerView *bannerView;
 @property (nonatomic, retain) GADInterstitial *interstitialView;
-@property (nonatomic, retain) CDVAdMobAdsAdListener *adsListener;
-@property (nonatomic, retain) CDVAdMobAdsAdListener *backFillAdsListener;
-@property (nonatomic, retain) CDVAdMobAdsRewardedAdListener *rewardedAdsListener;
-@property (nonatomic, retain) CDVAdMobAdsRewardedAdListener *backfillRewardedAdsListener;
+@property (nonatomic, retain) CAPAdMobAdsAdListener *adsListener;
+@property (nonatomic, retain) CAPAdMobAdsAdListener *backFillAdsListener;
+@property (nonatomic, retain) CAPAdMobAdsRewardedAdListener *rewardedAdsListener;
+@property (nonatomic, retain) CAPAdMobAdsRewardedAdListener *backfillRewardedAdsListener;
 
 @property (nonatomic, retain) NSString* publisherId;
 @property (nonatomic, retain) NSString* bannerAdId;
@@ -87,21 +86,21 @@
 @property (assign) BOOL hasTappx;
 @property (assign) double tappxShare;
 
-- (void)setOptions:(CDVInvokedUrlCommand *)command;
+- (void)setOptions:(CAPPluginCall *)command;
 
-- (void)createBannerView:(CDVInvokedUrlCommand *)command;
-- (void)showBannerAd:(CDVInvokedUrlCommand *)command;
-- (void)destroyBannerView:(CDVInvokedUrlCommand *)command;
+- (void)createBannerView:(CAPPluginCall *)command;
+- (void)showBannerAd:(CAPPluginCall *)command;
+- (void)destroyBannerView:(CAPPluginCall *)command;
 
-- (void)requestInterstitialAd:(CDVInvokedUrlCommand *)command;
-- (void)showInterstitialAd:(CDVInvokedUrlCommand *)command;
+- (void)requestInterstitialAd:(CAPPluginCall *)command;
+- (void)showInterstitialAd:(CAPPluginCall *)command;
 
-- (void)requestRewardedAd:(CDVInvokedUrlCommand *)command;
-- (void)showRewardedAd:(CDVInvokedUrlCommand *)command;
+- (void)requestRewardedAd:(CAPPluginCall *)command;
+- (void)showRewardedAd:(CAPPluginCall *)command;
 
-- (void)onBannerAd:(GADBannerView *)adView adListener:(CDVAdMobAdsAdListener *)adListener ;
-- (void)onInterstitialAd:(GADInterstitial *)interstitial adListener:(CDVAdMobAdsAdListener *)adListener;
-- (void)onRewardedAd:(GADRewardBasedVideoAd *)rewardBasedVideoAd adListener:(CDVAdMobAdsRewardedAdListener *)adListener;
+- (void)onBannerAd:(GADBannerView *)adView adListener:(CAPAdMobAdsAdListener *)adListener ;
+- (void)onInterstitialAd:(GADInterstitial *)interstitial adListener:(CAPAdMobAdsAdListener *)adListener;
+- (void)onRewardedAd:(GADRewardBasedVideoAd *)rewardBasedVideoAd adListener:(CAPAdMobAdsRewardedAdListener *)adListener;
 
 - (void)tryToBackfillBannerAd;
 - (void)tryToBackfillInterstitialAd;
