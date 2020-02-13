@@ -1,5 +1,5 @@
 /*
- CDVAdMobAdsAdListener.m
+ CAPAdMobAdsAdListener.m
  Copyright 2015 AppFeel. All rights reserved.
  http://www.appfeel.com
  
@@ -25,20 +25,20 @@
  */
 
 #import <Foundation/Foundation.h>
-#include "CDVAdMobAds.h"
-#include "CDVAdMobAdsAdListener.h"
+#include "CAPAdMobAds.h"
+#include "CAPAdMobAdsAdListener.h"
 
-@interface CDVAdMobAdsAdListener()
+@interface CAPAdMobAdsAdListener()
 - (NSString *) __getErrorReason:(NSInteger) errorCode;
 @end
 
 
-@implementation CDVAdMobAdsAdListener
+@implementation CAPAdMobAdsAdListener
 
 @synthesize adMobAds;
 @synthesize isBackFill;
 
-- (instancetype)initWithAdMobAds: (CDVAdMobAds *)originalAdMobAds andIsBackFill: (BOOL)andIsBackFill {
+- (instancetype)initWithAdMobAds: (CAPAdMobAds *)originalAdMobAds andIsBackFill: (BOOL)andIsBackFill {
     self = [super init];
     if (self) {
         adMobAds = originalAdMobAds;
@@ -53,7 +53,8 @@
 // onAdLoaded
 - (void)adViewDidReceiveAd:(GADBannerView *)adView {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        [adMobAds.commandDelegate evalJs:@"setTimeout(function (){ cordova.fireDocumentEvent(admob.events.onAdLoaded, { 'adType' : 'banner' }); }, 1);"];
+        NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:@"adType", @"banner"];   
+        [adMobAds notifyListeners:@"onAdLoaded", data];
     }];
     [adMobAds onBannerAd:adView adListener:self];
 }
@@ -66,12 +67,8 @@
     if (isBackFill) {
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
             // Since we're passing error back through Cordova, we need to set this up.
-            NSString *jsString =
-            @"setTimeout(function (){ cordova.fireDocumentEvent(admob.events.onAdFailedToLoad, "
-            @"{ 'adType' : 'banner', 'error': %ld, 'reason': '%@' }); }, 1);";
-            [adMobAds.commandDelegate evalJs:[NSString stringWithFormat:jsString,
-                                              (long)error.code,
-                                              [self __getErrorReason:error.code]]];
+            NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:@"adType", @"banner", @"error", (long)error.code, @"reason", [self __getErrorReason:error.code]];
+            [adMobAds notifyListeners:@"onAdFailedToLoad", data];
         }];
     } else {
         [adMobAds tryToBackfillBannerAd];
@@ -80,34 +77,32 @@
 
 - (void)adViewDidFailedToShow:(GADBannerView *)view {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        NSString *jsString =
-        @"setTimeout(function (){ cordova.fireDocumentEvent(admob.events.onAdFailedToLoad, "
-        @"{ 'adType' : 'banner', 'error': %ld, 'reason': '%@' }); }, 1);";
-        [adMobAds.commandDelegate evalJs:[NSString stringWithFormat:jsString,
-                                          0,
-                                          @"Advertising tracking may be disabled. To get test ads on this device, enable advertising tracking."]];
-    }];
-    
+        NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:@"adType", @"banner", @"error", 0, @"reason", @"Advertising tracking may be disabled. To get test ads on this device, enable advertising tracking."];
+        [adMobAds notifyListeners:@"onAdFailedToLoad", data];
+    }];   
 }
 
 // onAdOpened
 - (void)adViewWillPresentScreen:(GADBannerView *)adView {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        [adMobAds.commandDelegate evalJs:@"setTimeout(function (){ cordova.fireDocumentEvent(admob.events.onAdOpened, { 'adType' : 'banner' }); }, 1);"];
+        NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:@"adType", @"banner"];
+        [adMobAds notifyListeners:@"onAdOpened", data];
     }];
 }
 
 // onAdLeftApplication
 - (void)adViewWillLeaveApplication:(GADBannerView *)adView {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        [adMobAds.commandDelegate evalJs:@"setTimeout(function (){ cordova.fireDocumentEvent(admob.events.onAdLeftApplication, { 'adType' : 'banner' }); }, 1);"];
+        NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:@"adType", @"banner"];
+        [adMobAds notifyListeners:@"onAdLeftApplication", data];
     }];
 }
 
 // onAdClosed
 - (void)adViewDidDismissScreen:(GADBannerView *)adView {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        [adMobAds.commandDelegate evalJs:@"setTimeout(function (){ cordova.fireDocumentEvent(admob.events.onAdClosed, { 'adType' : 'banner' }); }, 1);"];
+        NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:@"adType", @"banner"];
+        [adMobAds notifyListeners:@"onAdClosed", data];
     }];
 }
 
@@ -122,19 +117,16 @@
     if (adMobAds.interstitialView) {
         [adMobAds onInterstitialAd:interstitial adListener:self];
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            [adMobAds.commandDelegate evalJs:@"setTimeout(function (){ cordova.fireDocumentEvent(admob.events.onAdLoaded, { 'adType' : 'interstitial' }); }, 1);"];
+            NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:@"adType", @"interstitial"];
+            [adMobAds notifyListeners:@"onAdLoaded", data];
         }];
     }
 }
 
 - (void)interstitialDidFailedToShow:(GADInterstitial *) interstitial {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        NSString *jsString =
-        @"setTimeout(function (){ cordova.fireDocumentEvent(admob.events.onAdFailedToLoad, "
-        @"{ 'adType' : 'interstitial', 'error': %ld, 'reason': '%@' }); }, 1);";
-        [adMobAds.commandDelegate evalJs:[NSString stringWithFormat:jsString,
-                                          0,
-                                          @"Advertising tracking may be disabled. To get test ads on this device, enable advertising tracking."]];
+        NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:@"adType", @"interstitial", @"error", 0, @"reason", @"Advertising tracking may be disabled. To get test ads on this device, enable advertising tracking."];
+        [adMobAds notifyListeners:@"onAdFailedToLoad", data];
     }];
     
 }
@@ -149,12 +141,8 @@
     if (isBackFill) {
         adMobAds.isInterstitialAvailable = false;
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            NSString *jsString =
-            @"setTimeout(function (){ cordova.fireDocumentEvent(admob.events.onAdFailedToLoad, "
-            @"{ 'adType' : 'interstitial', 'error': %ld, 'reason': '%@' }); }, 1);";
-            [adMobAds.commandDelegate evalJs:[NSString stringWithFormat:jsString,
-                                              (long)error.code,
-                                              [self __getErrorReason:error.code]]];
+            NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:@"adType", @"interstitial", @"error", (long)error.code, @"reason", [self __getErrorReason:error.code]];
+            [adMobAds notifyListeners:@"onAdFailedToLoad", data];
         }];
         
     } else {
@@ -171,7 +159,8 @@
 - (void)interstitialWillPresentScreen:(GADInterstitial *)interstitial {
     if (adMobAds.isInterstitialAvailable) {
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            [adMobAds.commandDelegate evalJs:@"setTimeout(function (){ cordova.fireDocumentEvent(admob.events.onAdOpened, { 'adType' : 'interstitial' }); }, 1);"];
+            NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:@"adType", @"interstitial"];
+            [adMobAds notifyListeners:@"onAdOpened", data];
         }];
         adMobAds.isInterstitialAvailable = false;
     }
@@ -182,7 +171,8 @@
 // onAdClosed
 - (void)interstitialDidDismissScreen:(GADInterstitial *)interstitial {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        [adMobAds.commandDelegate evalJs:@"setTimeout(function (){ cordova.fireDocumentEvent(admob.events.onAdClosed, { 'adType' : 'interstitial' }); }, 1);"];
+        NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:@"adType", @"interstitial"];
+        [adMobAds notifyListeners:@"onAdClosed", data];
     }];
     adMobAds.isInterstitialAvailable = false;
 }

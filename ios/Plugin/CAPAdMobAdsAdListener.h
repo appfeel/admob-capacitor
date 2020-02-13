@@ -1,5 +1,5 @@
 /*
- CDVAdMobAdsRewardedAdListener.h
+ CAPAdMobAdsAdListener.h
  Copyright 2015 AppFeel. All rights reserved.
  http://www.appfeel.com
  
@@ -25,20 +25,22 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "CDVAdMobAds.h"
-#import <GoogleMobileAds/GADRewardBasedVideoAdDelegate.h>
+#import "CAPAdMobAds.h"
+#import <GoogleMobileAds/GADBannerViewDelegate.h>
+#import <GoogleMobileAds/GADInterstitialDelegate.h>
 #import <GoogleMobileAds/GADExtras.h>
 
-@class CDVAdMobAds;
+@class CAPAdMobAds;
 
-@interface CDVAdMobAdsRewardedAdListener : NSObject <GADRewardBasedVideoAdDelegate> {
+@interface CAPAdMobAdsAdListener : NSObject <GADBannerViewDelegate, GADInterstitialDelegate> {
     
 }
 
-@property (nonatomic, retain) CDVAdMobAds *adMobAds;
+@property (nonatomic, retain) CAPAdMobAds *adMobAds;
 @property (assign) BOOL isBackFill;
 
-- (instancetype)initWithAdMobAds: (CDVAdMobAds *)originalAdMobAds andIsBackFill: (BOOL)andIsBackFill;
-- (void)rewardBasedVideoAdDidFailedToShow:(GADRewardBasedVideoAd *) rewarded;
+- (instancetype)initWithAdMobAds: (CAPAdMobAds *)originalAdMobAds andIsBackFill: (BOOL)andIsBackFill;
+- (void)adViewDidFailedToShow:(GADBannerView *)view;
+- (void)interstitialDidFailedToShow:(GADInterstitial *) interstitial;
 
 @end

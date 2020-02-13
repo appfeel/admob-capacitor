@@ -1,6 +1,6 @@
 
 /*
- CDVAdMobAdsRewardedAdListener.m
+ CAPAdMobAdsRewardedAdListener.m
  Copyright 2015 AppFeel. All rights reserved.
  http://www.appfeel.com
  
@@ -26,20 +26,20 @@
  */
 
 #import <Foundation/Foundation.h>
-#include "CDVAdMobAds.h"
-#include "CDVAdMobAdsRewardedAdListener.h"
+#include "CAPAdMobAds.h"
+#include "CAPAdMobAdsRewardedAdListener.h"
 
-@interface CDVAdMobAdsRewardedAdListener()
+@interface CAPAdMobAdsRewardedAdListener()
 - (NSString *) __getErrorReason:(NSInteger) errorCode;
 @end
 
 
-@implementation CDVAdMobAdsRewardedAdListener
+@implementation CAPAdMobAdsRewardedAdListener
 
 @synthesize adMobAds;
 @synthesize isBackFill;
 
-- (instancetype)initWithAdMobAds: (CDVAdMobAds *)originalAdMobAds andIsBackFill: (BOOL)andIsBackFill {
+- (instancetype)initWithAdMobAds: (CAPAdMobAds *)originalAdMobAds andIsBackFill: (BOOL)andIsBackFill {
     self = [super init];
     if (self) {
         adMobAds = originalAdMobAds;
@@ -50,55 +50,58 @@
 
 - (void)rewardBasedVideoAdDidFailedToShow:(GADRewardBasedVideoAd *)rewarded {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-       NSString *jsString =
-        @"setTimeout(function (){ cordova.fireDocumentEvent(admob.events.onAdFailedToLoad, "
-        @"{ 'adType' : 'rewarded', 'error': %ld, 'reason': '%@' }); }, 1);";
-        [adMobAds.commandDelegate evalJs:[NSString stringWithFormat:jsString,
-                                          0,
-                                          @"Advertising tracking may be disabled. To get test ads on this device, enable advertising tracking."]];
+        NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:@"adType", @"rewarded", @"error", 0, @"reason", @"Advertising tracking may be disabled. To get test ads on this device, enable advertising tracking."];
+        [adMobAds notifyListeners:@"onAdFailedToLoad", data];
     }];
 }
 
 - (void)rewardBasedVideoAd:(GADRewardBasedVideoAd *)rewardBasedVideoAd didRewardUserWithReward:(GADAdReward *)reward {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        [adMobAds.commandDelegate evalJs:@"setTimeout(function (){ cordova.fireDocumentEvent(admob.events.onRewardedAd, { 'adType': 'rewarded' }); }, 1);"];
+        NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:@"adType", @"rewarded"];
+        [adMobAds notifyListeners:@"onRewardedAd", data];
     }];
 }
 
 - (void)rewardBasedVideoAdDidReceiveAd:(GADRewardBasedVideoAd *)rewardBasedVideoAd {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        [adMobAds.commandDelegate evalJs:@"setTimeout(function (){ cordova.fireDocumentEvent(admob.events.onAdLoaded, { 'adType': 'rewarded' }); }, 1);"];
+        NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:@"adType", @"rewarded"];
+        [adMobAds notifyListeners:@"onAdLoaded", data];
     }];
     [adMobAds onRewardedAd:rewardBasedVideoAd adListener:self];
 }
 
 - (void)rewardBasedVideoAdDidOpen:(GADRewardBasedVideoAd *)rewardBasedVideoAd {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        [adMobAds.commandDelegate evalJs:@"setTimeout(function (){ cordova.fireDocumentEvent(admob.events.onAdOpened, { 'adType': 'rewarded' }); }, 1);"];
+        NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:@"adType", @"rewarded"];
+        [adMobAds notifyListeners:@"onAdOpened", data];
     }];
 }
 
 - (void)rewardBasedVideoAdDidStartPlaying:(GADRewardBasedVideoAd *)rewardBasedVideoAd {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        [adMobAds.commandDelegate evalJs:@"setTimeout(function (){ cordova.fireDocumentEvent(admob.events.onRewardedAdVideoStarted, { 'adType': 'rewarded' }); }, 1);"];
+        NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:@"adType", @"rewarded"];
+        [adMobAds notifyListeners:@"onRewardedAdVideoStarted", data];
     }];
 }
 
 - (void)rewardBasedVideoAdDidCompletePlaying:(GADRewardBasedVideoAd *)rewardBasedVideoAd {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        [adMobAds.commandDelegate evalJs:@"setTimeout(function (){ cordova.fireDocumentEvent(admob.events.onRewardedAdVideoCompleted, { 'adType': 'rewarded' }); }, 1);"];
+        NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:@"adType", @"rewarded"];
+        [adMobAds notifyListeners:@"onRewardedAdVideoCompleted", data];
     }];
 }
 
 - (void)rewardBasedVideoAdDidClose:(GADRewardBasedVideoAd *)rewardBasedVideoAd {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        [adMobAds.commandDelegate evalJs:@"setTimeout(function (){ cordova.fireDocumentEvent(admob.events.onAdClosed, { 'adType': 'rewarded' }); }, 1);"];
+        NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:@"adType", @"rewarded"];
+        [adMobAds notifyListeners:@"onAdClosed", data];
     }];
 }
 
 - (void)rewardBasedVideoAdWillLeaveApplication:(GADRewardBasedVideoAd *)rewardBasedVideoAd {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        [adMobAds.commandDelegate evalJs:@"setTimeout(function (){ cordova.fireDocumentEvent(admob.events.onAdLeftApplication, { 'adType': 'rewarded' }); }, 1);"];
+        NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:@"adType", @"rewarded"];
+        [adMobAds notifyListeners:@"onAdLeftApplication", data];
     }];
 }
 
@@ -106,12 +109,8 @@
     if (isBackFill) {
         adMobAds.isRewardedAvailable = false;
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            NSString *jsString =
-            @"setTimeout(function (){ cordova.fireDocumentEvent(admob.events.onAdFailedToLoad, "
-            @"{ 'adType' : 'rewarded', 'error': %ld, 'reason': '%@' }); }, 1);";
-            [adMobAds.commandDelegate evalJs:[NSString stringWithFormat:jsString,
-                                              (long)error.code,
-                                              [self __getErrorReason:error.code]]];
+            NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:@"adType", @"rewarded", @"error", (long)error.code, @"reason", [self __getErrorReason:error.code]];
+            [adMobAds notifyListeners:@"onAdFailedToLoad", data];
         }];
     } else {
         [adMobAds tryToBackfillRewardedAd];
