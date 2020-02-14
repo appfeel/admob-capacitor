@@ -3,7 +3,7 @@
  Copyright 2015 AppFeel. All rights reserved.
  http://www.appfeel.com
  
- AdMobAds Cordova Plugin (cordova-admob)
+ AdMobAds Capacitor Plugin (cordova-admob)
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to

@@ -3,7 +3,7 @@
  Copyright 2015 AppFeel. All rights reserved.
  http://www.appfeel.com
  
- AdMobAds Cordova Plugin (cordova-admob)
+ AdMobAds Capacitor Plugin (cordova-admob)
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to
@@ -66,7 +66,7 @@
     
     if (isBackFill) {
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            // Since we're passing error back through Cordova, we need to set this up.
+            // Since we're passing error back through Capacitor, we need to set this up.
             NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:@"adType", @"banner", @"error", (long)error.code, @"reason", [self __getErrorReason:error.code]];
             [adMobAds notifyListeners:@"onAdFailedToLoad", data];
         }];

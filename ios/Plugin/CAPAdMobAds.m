@@ -3,7 +3,7 @@
  Copyright 2015 AppFeel. All rights reserved.
  http://www.appfeel.com
  
- AdMobAds Cordova Plugin (cordova-admob)
+ AdMobAds Capacitor Plugin (cordova-admob)
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to
@@ -107,7 +107,7 @@
 @synthesize isBannerVisible, isBannerInitialized, isBannerRequested, isInterstitialRequested, isRewardedRequested, isNetworkActive;
 @synthesize isBannerShow, isBannerAutoShow, isInterstitialAutoShow, isRewardedAutoShow, hasTappx, isGo2TappxInInterstitialBackfill, isGo2TappxInBannerBackfill;
 
-#pragma mark Cordova JS bridge
+#pragma mark Capacitor JS bridge
 
 - (void)pluginInitialize {
     // These notifications are required for re-placing the ad on orientation
@@ -753,8 +753,6 @@
             NSMutableDictionary *modifiedExtrasDict =
             [[NSMutableDictionary alloc] initWithDictionary:self.adExtras];
             
-            [modifiedExtrasDict removeObjectForKey:@"cordova"];
-            [modifiedExtrasDict setValue:@"1" forKey:@"cordova"];
             extras.additionalParameters = modifiedExtrasDict;
             [request registerAdNetworkExtras:extras];
         });
@@ -911,7 +909,7 @@
 }
     
 - (void)resizeViews {
-    // Frame of the main container view that holds the Cordova webview.
+    // Frame of the main container view that holds the Capacitor webview.
     CGRect pr = self.webView.superview.bounds;
     CGRect wf = pr;
     //NSLog(@"super view: %d x %d", (int)pr.size.width, (int)pr.size.height);
