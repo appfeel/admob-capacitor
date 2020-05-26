@@ -27,6 +27,8 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+#import <Capacitor/CAPPlugin.h>
+#import <Capacitor/CAPPluginCall.h>
 #import <GoogleMobileAds/GADAdSize.h>
 #import <GoogleMobileAds/GADBannerView.h>
 #import <GoogleMobileAds/GADInterstitial.h>
