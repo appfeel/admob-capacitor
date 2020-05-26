@@ -27,7 +27,7 @@
 #import <AdSupport/ASIdentifierManager.h>
 #import <CommonCrypto/CommonDigest.h>
 #import "CAPAdMobAds.h"
-#import "MainViewController.h"
+// #import "MainViewController.h"
 
 @interface CAPAdMobAds()
 
@@ -245,7 +245,7 @@
     isGo2TappxInBannerBackfill = [_pid isEqualToString:DEFAULT_AD_PUBLISHER_ID];
     
     if (![self __createBanner:_pid withAdListener:adsListener  isTappx:[_pid isEqualToString:tappxId] andIsBackFill:false]) {
-        [command reject:@"Advertising tracking may be disabled. To get test ads on this device, enable advertising tracking."]
+        [command re ject:@"Advertising tracking may be disabled. To get test ads on this device, enable advertising tracking."]
     }
     isBannerShow = isBannerAutoShow;
     [command success];

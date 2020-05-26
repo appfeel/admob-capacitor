@@ -1,7 +1,7 @@
 {
   "name": "admob-capacitor",
   "version": "0.0.1",
-  "description": "easy way to integrate Google AdMob",
+  "description": "Easy way to integrate Google AdMob",
   "main": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
   "scripts": {
@@ -10,7 +10,7 @@
     "watch": "tsc --watch",
     "prepublishOnly": "npm run build"
   },
-  "author": "",
+  "author": "AppFeel",
   "license": "MIT",
   "dependencies": {
     "@capacitor/core": "latest"
@@ -24,12 +24,24 @@
     "dist/",
     "ios/",
     "android/",
-    "AdMobAds.podspec"
+    "AdmobCapacitor.podspec"
   ],
   "keywords": [
     "capacitor",
     "plugin",
-    "native"
+    "admob",
+    "native",
+    "monetization",
+    "ionic",
+    "stencil",
+    "android",
+    "ios",
+    "iphone",
+    "ipad",
+    "ads",
+    "interstitial",
+    "banner",
+    "rewarded"
   ],
   "capacitor": {
     "ios": {
@@ -41,9 +53,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "-"
+    "url": "https://github.com/appfeel/admob-capacitor"
   },
   "bugs": {
-    "url": "-/issues"
+    "url": "https://github.com/appfeel/admob-capacitor/issues"
   }
 }
