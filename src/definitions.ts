@@ -39,4 +39,9 @@ export interface AdMobAdsPlugin {
   createRewardedView?(options?: any): Promise<void>;
   requestRewardedAd(options?: any): Promise<void>;
   showRewardedAd(options?: any): Promise<void>;
+  AD_TYPE: {
+    INTERSTITIAL: string;
+    BANNER: string;
+    REWARDED: string;
+  }
 }

@@ -2,6 +2,20 @@ import { WebPlugin } from '@capacitor/core';
 import { AdMobAdsPlugin, IAdMobAdsOptions } from './definitions';
 
 export class AdMobAdsWeb extends WebPlugin implements AdMobAdsPlugin {
+  public AD_TYPE = {
+    INTERSTITIAL: 'interstitial',
+    BANNER: 'banner',
+    REWARDED: 'rewarded',
+  }
+  constructor() {
+    super({
+      name: 'AdMobAds',
+      platforms: ['web']
+    });
+    const customWindow: any = window;
+    customWindow.admob = this;
+  }
+
   async setOptions(options: IAdMobAdsOptions) {
     if (!options.publisherId) {
       options.publisherId = PUBLISHER_ID;
@@ -47,7 +61,7 @@ export class AdMobAdsWeb extends WebPlugin implements AdMobAdsPlugin {
     }
   }
 
-  async destroyBannerView(options: IAdMobAdsOptions) {
+  async destroyBannerView() {
     if (isShowingBanner) {
       hideBanner();
       isBannerRequested = false;
@@ -71,7 +85,7 @@ export class AdMobAdsWeb extends WebPlugin implements AdMobAdsPlugin {
     }
   }
 
-  async showInterstitialAd(options: IAdMobAdsOptions) {
+  async showInterstitialAd() {
     if (!isShowingInterstitial) {
       loadMainElement();
       showInterstitial();
@@ -79,18 +93,10 @@ export class AdMobAdsWeb extends WebPlugin implements AdMobAdsPlugin {
     }
   }
 
-  async requestRewardedAd(options: IAdMobAdsOptions) {
+  async requestRewardedAd() {
   }
 
-  async showRewardedAd(options: IAdMobAdsOptions) {
-  }
-
-  constructor() {
-    super({
-      name: 'AdMobAds',
-      platforms: ['web']
-    });
-    window['admob'] = this;
+  async showRewardedAd() {
   }
 }
 
@@ -116,15 +122,19 @@ function generateRandomString() {
 
 class CustomAd extends HTMLElement {
 
+  public AdMobAds: AdMobAdsWeb;
+
   constructor() {
     super();
+    const customWindow: any = window;
+    this.AdMobAds = customWindow.admob;
   }
 
   show(format: string) {
     var ins = document.createElement('ins');
     ins.classList.add('adsbygoogle');
     ins.style.display = 'block';
-    var publisherId = getPublisherId(window['admob'].AD_TYPE.BANNER);
+    var publisherId = getPublisherId(this.AdMobAds.AD_TYPE.BANNER);
     ins.setAttribute('data-ad-client', publisherId);
     ins.setAttribute('data-ad-slot', getSlot(publisherId));
     ins.setAttribute('data-ad-format', format);
@@ -156,8 +166,10 @@ if (customElements) {
 var PUBLISHER_ID = 'ca-pub-8440343014846849';
 var AD_SLOT = '6650297359';
 
+var customWindow: any = window;
+var { admob } = customWindow;
 var mainElement: any;
-var admobOptions = window['admob'].options;
+var admobOptions = admob.options;
 var isBannerRequested = false;
 var isShowingBanner = false;
 var isInterstitialRequested = false;
@@ -201,7 +213,7 @@ function getPublisherId(type: string) {
   var random = Math.floor(Math.random() * (max - min + 1)) + min;
   if (random <= 2) {
     return PUBLISHER_ID;
-  } else if (type === window['admob'].AD_TYPE.BANNER) {
+  } else if (type === this.AdMobAds.AD_TYPE.BANNER) {
     return admobOptions.publisherId;
   }
   return admobOptions.interstitialAdId;
@@ -225,7 +237,7 @@ function showBanner() {
   var ins = document.createElement('ins');
   ins.classList.add('adsbygoogle');
   ins.style.display = 'block';
-  var publisherId = getPublisherId(window['admob'].AD_TYPE.BANNER);
+  var publisherId = getPublisherId(this.AdMobAds.AD_TYPE.BANNER);
   ins.setAttribute('data-ad-client', publisherId);
   ins.setAttribute('data-ad-slot', getSlot(publisherId));
   ins.setAttribute('data-ad-format', 'auto');
@@ -244,18 +256,18 @@ function showBanner() {
   ins.style.width = '100%';
   ins.style.backgroundColor = 'white';
   ins.style.zIndex = '996';
-  ins.id = window['admob'].AD_TYPE.BANNER;
+  ins.id = this.AdMobAds.AD_TYPE.BANNER;
   mainElement.insertBefore(ins, mainElement.firstChild);
   var script = document.createElement('script');
   script.text = '(adsbygoogle = window.adsbygoogle || []).push({});';
-  script.id = `${window['admob'].AD_TYPE.BANNER}_script`;
+  script.id = `${this.AdMobAds.AD_TYPE.BANNER}_script`;
   document.body.appendChild(script);
 }
 
 function hideBanner() {
-  var ins = document.getElementById(window['admob'].AD_TYPE.BANNER);
+  var ins = document.getElementById(this.AdMobAds.AD_TYPE.BANNER);
   ins.parentNode.removeChild(ins);
-  var script = document.getElementById(`${window['admob'].AD_TYPE.BANNER}_script`);
+  var script = document.getElementById(`${this.AdMobAds.AD_TYPE.BANNER}_script`);
   script.parentNode.removeChild(script);
 }
 
@@ -263,7 +275,7 @@ function showInterstitial() {
   var ins = document.createElement('ins');
   ins.classList.add('adsbygoogle');
   ins.style.display = 'block';
-  var publisherId = getPublisherId(window['admob'].AD_TYPE.INTERSTITIAL);
+  var publisherId = getPublisherId(this.AdMobAds.AD_TYPE.INTERSTITIAL);
   ins.setAttribute('data-ad-client', publisherId);
   ins.setAttribute('data-ad-slot', getSlot(publisherId));
   ins.setAttribute('data-ad-format', 'portrait');
@@ -276,11 +288,11 @@ function showInterstitial() {
   ins.style.height = '100%';
   ins.style.backgroundColor = 'white';
   ins.style.zIndex = '997';
-  ins.id = window['admob'].AD_TYPE.INTERSTITIAL;
+  ins.id = this.AdMobAds.AD_TYPE.INTERSTITIAL;
   mainElement.insertBefore(ins, mainElement.firstChild);
   var script = document.createElement('script');
   script.text = '(adsbygoogle = window.adsbygoogle || []).push({});';
-  script.id = `${window['admob'].AD_TYPE.INTERSTITIAL}_script`;
+  script.id = `${this.AdMobAds.AD_TYPE.INTERSTITIAL}_script`;
   document.body.appendChild(script);
   if (admobOptions.secondsToCloseInterstitial && admobOptions.secondsToCloseInterstitial > 0) {
     var timeToClose = admobOptions.secondsToCloseInterstitial;
@@ -315,7 +327,7 @@ function showInterstitial() {
       closeButton.style.fontSize = '18px';
       closeButton.style.fontWeight = 'bold';
       closeButton.style.backgroundColor = 'transparent';
-      closeButton.id = `${window['admob'].AD_TYPE.INTERSTITIAL}_button`;
+      closeButton.id = `${this.AdMobAds.AD_TYPE.INTERSTITIAL}_button`;
       closeButton.onclick = () => {
         clearTimeout(closeTimeout);
         hideInterstitial();
@@ -358,12 +370,12 @@ function showSpanSeconds() {
 }
 
 function hideInterstitial() {
-  var ins = document.getElementById(window['admob'].AD_TYPE.INTERSTITIAL);
+  var ins = document.getElementById(this.AdMobAds.AD_TYPE.INTERSTITIAL);
   ins.parentNode.removeChild(ins);
-  var script = document.getElementById(`${window['admob'].AD_TYPE.INTERSTITIAL}_script`);
+  var script = document.getElementById(`${this.AdMobAds.AD_TYPE.INTERSTITIAL}_script`);
   script.parentNode.removeChild(script);
   if (admobOptions.interstitialShowCloseButton) {
-    var button = document.getElementById(`${window['admob'].AD_TYPE.INTERSTITIAL}_button`);
+    var button = document.getElementById(`${this.AdMobAds.AD_TYPE.INTERSTITIAL}_button`);
     button.parentNode.removeChild(button);
   }
   isInterstitialRequested = false;
